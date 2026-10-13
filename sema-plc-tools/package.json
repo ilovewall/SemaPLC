@@ -1,6 +1,7 @@
 {
   "name": "@sema/plc-tools",
   "version": "0.1.0",
+  "license": "MIT",
   "description": "MCP stdio server for OpenPLC Runtime control",
   "type": "module",
   "main": "./dist/cli.js",

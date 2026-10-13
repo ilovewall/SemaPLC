@@ -46,6 +46,34 @@ source, which is therefore MIT. See [GNU's guidance on aggregation](https://www.
 | **sema-core** | MIT | vendored tarball `sema-plc-web/vendor/sema-core-2.0.5.tgz`, installed via a `file:` dependency | https://github.com/midea-ai/sema-code-core |
 | **ladder-logic-editor** | MIT | lifted into `sema-plc-web/src/{lang,models,transformer,ladder-nodes}/` (see `sema-plc-web/LICENSE`) | https://github.com/cdilga/ladder-logic-editor |
 
+### ladder-logic-editor attribution
+
+The paths below are relative to `sema-plc-web/`.
+
+This project includes code adapted from cdilga/ladder-logic-editor,
+which is licensed under MIT (C) 2026 cdilga.
+Original source: https://github.com/cdilga/ladder-logic-editor
+
+The directories `src/lang/`, `src/models/`, and `src/transformer/` were
+copied from that project on 2026-05-21 and modified to fit this project's
+needs. Modifications made:
+
+- src/models/ladder-elements.ts: changed `reactflow` import to `@xyflow/react`;
+  added `extends Record<string, unknown>` to BaseLadderElementData and
+  LadderEdgeData to satisfy @xyflow/react's stricter generic constraints.
+
+- src/models/project.ts: removed Vite ?raw imports for example ST files
+  (replaced with empty-string stubs — plc-vis-web loads ST from the server
+  API instead); removed re-export block that duplicated index.ts exports.
+
+- src/lang/build-parser.mjs: deleted (build-time tool, not needed at runtime).
+
+- All *.test.ts files under lifted directories: deleted (our own tests live
+  under tests/server/).
+
+Files that originated from ladder-logic-editor retain attribution in this
+THIRD_PARTY_NOTICES.md file.
+
 ## npm dependencies
 
 Both packages' runtime/dev dependencies are resolved from the npm registry under permissive

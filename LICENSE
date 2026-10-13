@@ -19,30 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-----------------------------------------------------------------------------
-ATTRIBUTION
-
-This project includes code adapted from cdilga/ladder-logic-editor,
-which is licensed under MIT (C) 2026 cdilga.
-Original source: https://github.com/cdilga/ladder-logic-editor
-
-The directories `src/lang/`, `src/models/`, and `src/transformer/` were
-copied from that project on 2026-05-21 and modified to fit this project's
-needs. Modifications made:
-
-- src/models/ladder-elements.ts: changed `reactflow` import to `@xyflow/react`;
-  added `extends Record<string, unknown>` to BaseLadderElementData and
-  LadderEdgeData to satisfy @xyflow/react's stricter generic constraints.
-
-- src/models/project.ts: removed Vite ?raw imports for example ST files
-  (replaced with empty-string stubs — plc-vis-web loads ST from the server
-  API instead); removed re-export block that duplicated index.ts exports.
-
-- src/lang/build-parser.mjs: deleted (build-time tool, not needed at runtime).
-
-- All *.test.ts files under lifted directories: deleted (our own tests live
-  under tests/server/).
-
-Files that originated from ladder-logic-editor retain attribution in this
-LICENSE file.

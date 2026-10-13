@@ -185,6 +185,27 @@ cd sema-plc-web   && npm test     # server: vitest/node, frontend: vitest/jsdom
 - The embedded LLM Agent runtime is [sema-code-core](https://github.com/midea-ai/sema-code-core); WebSocket-gateway and embedded-Agent patterns are adapted from [SemaClaw](https://github.com/midea-ai/SemaClaw).
 - The ladder-diagram renderer is lifted from [cdilga/ladder-logic-editor](https://github.com/cdilga/ladder-logic-editor) (MIT) — see `sema-plc-web/LICENSE`.
 
+## 📚 Citation
+
+If you use SemaPLC in your research or projects, please consider citing the following papers:
+
+```bibtex
+@article{tu2026semaplc_arxiv,
+  title={SemaPLC: A Project-Grounded, Verification-Gated Agent Harness for PLC Code Generation},
+  author={Tu, Yanlun and Wang, Huacan and Zhou, Ziyue and Zhou, Jie and Zhu, Ningyan and Chen, Ge and Chen, Wangyi and Zhou, Tengfei and Zhou, Yifan and Yang, Dasheng and others},
+  journal={arXiv preprint arXiv:2608.18565},
+  year={2026}
+}
+
+@inproceedings{tu2026semaplc_splash_issta,
+  title={SemaPLC: An Open-Source Agentic IDE for Generation, Verification, and Simulation of PLC Programs from Natural Language},
+  author={Tu, Yanlun and Wang, Huacan and Zhou, Ziyue and Zhou, Jie and Zhu, Ningyan and Chen, Ge and Chen, Wangyi and Mou, Xiaofeng and Zhou, Tengfei and Yang, Dasheng and others},
+  booktitle={Companion Proceedings of the 2026 ACM SIGPLAN International Conference on Systems, Programming, Languages, and Applications: Software for Humanity},
+  pages={180--185},
+  year={2026}
+}
+```
+
 ## 📜 License
 
 Sema PLC's own code is released under the [MIT License](LICENSE).
