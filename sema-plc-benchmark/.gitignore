@@ -1,0 +1,16 @@
+# Local environments, install metadata and credentials
+.venv/
+venv/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.*
+!.env.example
+.DS_Store
+# Local evaluation outputs
+reports/
+candidates/
+workspaces/
+.cache/

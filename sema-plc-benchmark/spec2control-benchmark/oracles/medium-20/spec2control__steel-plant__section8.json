@@ -1,0 +1,14 @@
+{
+  "task_id": "spec2control/steel-plant/section8",
+  "source": "derived from Spec2Control tests/test_steel_plant_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "any_contains",
+      "values": [
+        "RATIO",
+        "Ratio",
+        "ratio"
+      ]
+    }
+  ]
+}

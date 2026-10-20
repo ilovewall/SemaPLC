@@ -1,0 +1,54 @@
+{
+  "task_id": "spec2control/multi-phase-flow-facility/section3",
+  "source": "derived from Spec2Control tests/test_multi_phase_flow_facility_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "75.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "85.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "65.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "9.375"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-37.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "90.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "5.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "6.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-25.0"
+    },
+    {
+      "type": "contains",
+      "value": "High_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Low_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    }
+  ]
+}

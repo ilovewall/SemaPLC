@@ -1,0 +1,18 @@
+{
+  "task_id": "spec2control/steel-plant/section2",
+  "source": "derived from Spec2Control tests/test_steel_plant_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "structure_required",
+      "value": "MV_MAX"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "62.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-250.0"
+    }
+  ]
+}

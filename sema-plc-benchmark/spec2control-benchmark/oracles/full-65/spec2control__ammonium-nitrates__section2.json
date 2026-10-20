@@ -1,0 +1,90 @@
+{
+  "task_id": "spec2control/ammonium-nitrates/section2",
+  "source": "derived from Spec2Control tests/test_ammonium_nitrates_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "31.25"
+    },
+    {
+      "type": "structure_required",
+      "value": "Scaling_Slope"
+    },
+    {
+      "type": "call_required",
+      "value": "PH_105"
+    },
+    {
+      "type": "structure_required",
+      "value": "Raw_Signal"
+    },
+    {
+      "type": "structure_required",
+      "value": "PV_High"
+    },
+    {
+      "type": "structure_required",
+      "value": "PV_Low"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "7.3"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "6.7"
+    },
+    {
+      "type": "structure_required",
+      "value": "X0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "10.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-125.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "100.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "1.8"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "190.0"
+    },
+    {
+      "type": "contains",
+      "value": "Inhibit"
+    },
+    {
+      "type": "contains",
+      "value": "High_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Low_Alarm"
+    },
+    {
+      "type": "any_contains",
+      "values": [
+        "RATIO",
+        "Ratio",
+        "ratio"
+      ]
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+workspaces/
+candidates/
+reports/
+.cache/
+__pycache__/
+.pytest_cache/
+*.pyc

@@ -1,0 +1,18 @@
+{
+  "task_id": "spec2control/waste_water_treatment_facility/section12",
+  "source": "derived from Spec2Control tests/test_wastewater_runtime.py without Sim_* runtime-only variable leakage",
+  "assertions": [
+    {"type": "contains", "value": "Inhibit"},
+    {"type": "contains", "value": "Alarm"},
+    {"type": "contains", "value": "PIDInhibit"},
+    {"type": "any_contains", "values": ["Open_Cmd", "OC1101", "LV104"]},
+    {"type": "numeric_constant", "value": "14.4"},
+    {"type": "numeric_constant", "value": "12.0"},
+    {"type": "numeric_constant", "value": "0.625"},
+    {"type": "numeric_constant", "value": "-2.5"},
+    {"type": "numeric_constant", "value": "6.25"},
+    {"type": "numeric_constant", "value": "-25.0"},
+    {"type": "numeric_constant", "value": "6.5"},
+    {"type": "numeric_constant", "value": "50.0"}
+  ]
+}

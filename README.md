@@ -214,3 +214,9 @@ It drives a GPL/LGPL PLC toolchain (matiec, rusty, OpenPLC) as **separate comman
 binaries built into the Docker image** — arm's-length process invocation, so their copyleft
 does not extend to this MIT source. Component licenses, the aggregation rationale, and Docker
 image redistribution obligations are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Benchmarks
+
+[PLC benchmark datasets](sema-plc-benchmark/README.md) contains Agents4PLC and
+Spec2Control tasks, reference data, and dataset documentation. Evaluation and
+code-generation scripts are not included.

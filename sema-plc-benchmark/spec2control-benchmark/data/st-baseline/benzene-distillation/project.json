@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "name": "benzene-distillation",
+    "type": "plc-project"
+  },
+  "data": {
+    "dataTypes": [],
+    "pous": [],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#20ms",
+            "priority": 0
+          }
+        ],
+        "instances": [
+          {
+            "name": "inst_main",
+            "task": "task0",
+            "program": "main"
+          },
+          {
+            "name": "inst_section2",
+            "task": "task0",
+            "program": "Section2"
+          },
+          {
+            "name": "inst_section3",
+            "task": "task0",
+            "program": "Section3"
+          },
+          {
+            "name": "inst_section4",
+            "task": "task0",
+            "program": "Section4"
+          },
+          {
+            "name": "inst_section6",
+            "task": "task0",
+            "program": "Section6"
+          }
+        ],
+        "globalVariables": [
+          {
+            "name": "gv_ft",
+            "type": {
+              "definition": "base-type",
+              "value": "dint"
+            },
+            "location": "",
+            "documentation": "",
+            "debug": false
+          }
+        ]
+      }
+    },
+    "debugVariables": {
+      "pous": {
+        "Section2": [
+          "TE101_Temperature_PV",
+          "LIT101_Level_PV",
+          "PIT102_Pressure_PV",
+          "TIC104_MV_Percent",
+          "PV103_Position_FB"
+        ],
+        "Section3": [
+          "Reboiler_Temperature_PV_TI106",
+          "Steam_Flow_PV_FIT101",
+          "Column_Pressure_PV_PT101",
+          "FIC104_MV_SteamValveCmd",
+          "LIC002_LowLevel_Trip"
+        ],
+        "Section4": [
+          "LT_105_Level_PV",
+          "FT_107_Flow_PV",
+          "PT_104_Pressure_PV",
+          "LIC_104_RSP_to_FIC_107_GPM",
+          "FIC_107_Control_Signal_to_LV_107",
+          "XV103_NotOpen",
+          "Cascade_Inhibit",
+          "Permissive_OK"
+        ],
+        "Section6": [
+          "FT105_FeedFlowRate",
+          "FT106_BottomsFlowRate",
+          "FT106_SP_From_IIC104",
+          "LIC002_LevelPV"
+        ],
+        "main": [
+          "Heartbeat"
+        ]
+      }
+    },
+    "deletedPous": []
+  }
+}

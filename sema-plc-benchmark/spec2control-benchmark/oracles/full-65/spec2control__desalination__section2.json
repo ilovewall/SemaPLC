@@ -1,0 +1,66 @@
+{
+  "task_id": "spec2control/desalination/section2",
+  "source": "derived from Spec2Control tests/test_desalination_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "5500.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "450.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "312.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-1250.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "3300.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "270.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "187.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-750.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "50.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "100.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "2.0"
+    },
+    {
+      "type": "contains",
+      "value": "High_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Low_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    }
+  ]
+}

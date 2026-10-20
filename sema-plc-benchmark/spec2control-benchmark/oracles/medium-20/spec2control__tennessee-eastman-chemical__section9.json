@@ -1,0 +1,18 @@
+{
+  "task_id": "spec2control/tennessee-eastman-chemical/section9",
+  "source": "derived from Spec2Control tests/test_tennessee_eastman_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "45.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "6.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-25.0"
+    }
+  ]
+}

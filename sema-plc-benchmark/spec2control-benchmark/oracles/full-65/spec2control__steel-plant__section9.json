@@ -1,0 +1,42 @@
+{
+  "task_id": "spec2control/steel-plant/section9",
+  "source": "derived from Spec2Control tests/test_steel_plant_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "6000.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "312.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-1250.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "375.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-1500.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.125"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-0.5"
+    },
+    {
+      "type": "any_contains",
+      "values": [
+        "RATIO",
+        "Ratio",
+        "ratio"
+      ]
+    }
+  ]
+}

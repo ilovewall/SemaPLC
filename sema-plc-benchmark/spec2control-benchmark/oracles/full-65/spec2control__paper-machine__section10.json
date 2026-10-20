@@ -1,0 +1,30 @@
+{
+  "task_id": "spec2control/paper-machine/section10",
+  "source": "derived from Spec2Control tests/test_paper_machine_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "6.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-25.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "31.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-125.0"
+    },
+    {
+      "type": "any_contains",
+      "values": [
+        "RATIO",
+        "Ratio",
+        "ratio"
+      ]
+    }
+  ]
+}

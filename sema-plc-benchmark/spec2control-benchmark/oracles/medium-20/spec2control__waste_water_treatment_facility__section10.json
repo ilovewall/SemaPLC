@@ -1,0 +1,86 @@
+{
+  "task_id": "spec2control/waste_water_treatment_facility/section10",
+  "source": "manual oracle derived from Spec2Control wastewater chapter_10 spec and reviewed baseline; runtime-only raw simulation inputs are excluded",
+  "assertions": [
+    {
+      "type": "call_required",
+      "value": "P_901AB"
+    },
+    {
+      "type": "call_required",
+      "value": "P_901A"
+    },
+    {
+      "type": "call_required",
+      "value": "P_901B"
+    },
+    {
+      "type": "call_required",
+      "value": "XV_102"
+    },
+    {
+      "type": "call_required",
+      "value": "FailA_TON"
+    },
+    {
+      "type": "call_required",
+      "value": "FailB_TON"
+    },
+    {
+      "type": "call_required",
+      "value": "SwitchoverDelay_TON"
+    },
+    {
+      "type": "call_required",
+      "value": "DutyTimer_TON"
+    },
+    {
+      "type": "structure_required",
+      "value": "StartRequest_OR"
+    },
+    {
+      "type": "structure_required",
+      "value": "BothPumpsFailed_AND"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "15.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "40.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "60.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "85.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "90.0"
+    },
+    {
+      "type": "contains",
+      "value": "T#10s"
+    },
+    {
+      "type": "contains",
+      "value": "T#5s"
+    },
+    {
+      "type": "contains",
+      "value": "T#48h"
+    },
+    {
+      "type": "contains",
+      "value": "T#30m"
+    },
+    {
+      "type": "contains",
+      "value": "Inhibit"
+    }
+  ]
+}

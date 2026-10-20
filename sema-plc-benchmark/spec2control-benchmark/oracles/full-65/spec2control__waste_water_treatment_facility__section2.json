@@ -1,0 +1,30 @@
+{
+  "task_id": "spec2control/waste_water_treatment_facility/section2",
+  "source": "derived from Spec2Control tests/test_wastewater_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "structure_required",
+      "value": "Start_Cmd"
+    },
+    {
+      "type": "contains",
+      "value": "Start_Cmd"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "31.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-125.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.625"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-2.5"
+    }
+  ]
+}

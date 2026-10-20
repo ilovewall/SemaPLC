@@ -1,0 +1,18 @@
+{
+  "task_id": "spec2control/ammonium-nitrates/section2",
+  "source": "derived from Spec2Control tests/test_ammonium_nitrates_runtime.py without Sim_* runtime-only variable leakage",
+  "assertions": [
+    {"type": "call_required", "value": "FIC_101"},
+    {"type": "call_required", "value": "FV_101"},
+    {"type": "call_required", "value": "FT_101"},
+    {"type": "any_contains", "values": ["RATIO", "Ratio", "ratio"]},
+    {"type": "numeric_constant", "value": "1.8"},
+    {"type": "numeric_constant", "value": "7.3"},
+    {"type": "numeric_constant", "value": "6.7"},
+    {"type": "numeric_constant", "value": "180.0"},
+    {"type": "numeric_constant", "value": "190.0"},
+    {"type": "numeric_constant", "value": "50.0"},
+    {"type": "contains", "value": "Inhibit"},
+    {"type": "contains", "value": "Alarm"}
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "task_id": "spec2control/benzene-distillation/section6",
+  "source": "derived from Spec2Control tests/test_benzene_section2_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "structure_required",
+      "value": "PV_Low"
+    },
+    {
+      "type": "structure_required",
+      "value": "RatioSP"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "1.5"
+    },
+    {
+      "type": "contains",
+      "value": "RatioSP"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "contains",
+      "value": "Inhibit"
+    },
+    {
+      "type": "any_contains",
+      "values": [
+        "RATIO",
+        "Ratio",
+        "ratio"
+      ]
+    }
+  ]
+}

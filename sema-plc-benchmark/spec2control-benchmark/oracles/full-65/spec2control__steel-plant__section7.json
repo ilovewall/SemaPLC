@@ -1,0 +1,22 @@
+{
+  "task_id": "spec2control/steel-plant/section7",
+  "source": "derived from Spec2Control tests/test_steel_plant_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "100.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "150.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "18.75"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-75.0"
+    }
+  ]
+}

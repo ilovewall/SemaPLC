@@ -1,0 +1,38 @@
+{
+  "task_id": "spec2control/coking-refinery/section5",
+  "source": "derived from Spec2Control tests/test_coking_refinery_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "495.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "510.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "480.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "9.375"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "362.5"
+    },
+    {
+      "type": "contains",
+      "value": "High_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Low_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    }
+  ]
+}

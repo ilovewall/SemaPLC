@@ -1,0 +1,38 @@
+{
+  "task_id": "spec2control/desalination/section6",
+  "source": "derived from Spec2Control tests/test_desalination_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "contains",
+      "value": "Permissive"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.1"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "62.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-250.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "200.0"
+    },
+    {
+      "type": "any_contains",
+      "values": [
+        "RATIO",
+        "Ratio",
+        "ratio"
+      ]
+    }
+  ]
+}

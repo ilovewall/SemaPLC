@@ -1,0 +1,3550 @@
+{
+  "meta": {
+    "name": "desalination",
+    "type": "plc-project"
+  },
+  "data": {
+    "dataTypes": [],
+    "pous": [
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "ANALOG_IN",
+          "variables": [
+            {
+              "name": "Raw_Signal",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV_High",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV_Low",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Scaling_Slope",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Scaling_Offset",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Enable",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "High_Alarm",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Low_Alarm",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "General_Fault",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "(* Linear scaling of the 4-20mA raw signal to engineering units. *)\nPV := Raw_Signal * Scaling_Slope + Scaling_Offset;\n(* Wire-break style fault: a healthy 4-20mA loop never drops below ~2mA. *)\nGeneral_Fault := Alarm_Enable AND (Raw_Signal < 2.0);\nHigh_Alarm := Alarm_Enable AND (PV > PV_High);\nLow_Alarm := Alarm_Enable AND (PV < PV_Low);"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "BOOL_INPUT",
+          "variables": [
+            {
+              "name": "Bool_In",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_OnTrue",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_OnFalse",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Latch_Enable",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Reset_Latch",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Bool_Out",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Active",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Latched_Status",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "Bool_Out := Bool_In;\nAlarm_Active := (Alarm_OnTrue AND Bool_In) OR (Alarm_OnFalse AND NOT Bool_In);\nIF Reset_Latch THEN\n    Latched_Status := FALSE;\nELSIF Latch_Enable AND Alarm_Active THEN\n    Latched_Status := TRUE;\nEND_IF;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "DIGITAL_IN",
+          "variables": [
+            {
+              "name": "DI_Raw",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "DebounceTime",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "EnableAlarm",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "DI_Out",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Fault_State",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "(* Pass-through of the field contact (debounce not modeled). *)\nDI_Out := DI_Raw;\nFault_State := FALSE;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "DUTY_STANDBY",
+          "variables": [
+            {
+              "name": "Enable",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "StartRequest",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AlternateEnable",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ForcePumpA",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ForcePumpB",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "DutyElapsed",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "MinRunElapsed",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SwitchoverDelayElapsed",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "StartTimeoutElapsed",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PumpA_RunFB",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PumpB_RunFB",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PumpA_Fault",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PumpB_Fault",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Reset",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "CmdPumpA",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "CmdPumpB",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ActiveIsA",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SwitchedDueToDuty",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SwitchedDueToFailure",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_FailedStart_A",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_FailedStart_B",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_NoAvailablePump",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "ActiveIsA := NOT AlternateEnable;\nIF Enable AND StartRequest AND NOT Inhibit THEN\n    CmdPumpA := ActiveIsA AND NOT PumpA_Fault;\n    CmdPumpB := (NOT ActiveIsA OR PumpA_Fault) AND NOT PumpB_Fault;\nELSE\n    CmdPumpA := FALSE;\n    CmdPumpB := FALSE;\nEND_IF;\nIF ForcePumpA THEN\n    CmdPumpA := Enable AND NOT Inhibit;\n    CmdPumpB := FALSE;\nEND_IF;\nIF ForcePumpB THEN\n    CmdPumpA := FALSE;\n    CmdPumpB := Enable AND NOT Inhibit;\nEND_IF;\nSwitchedDueToDuty := DutyElapsed;\nSwitchedDueToFailure := PumpA_Fault OR PumpB_Fault;\nAlarm_FailedStart_A := PumpA_Fault;\nAlarm_FailedStart_B := PumpB_Fault;\nAlarm_NoAvailablePump := PumpA_Fault AND PumpB_Fault;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "MOTOR_2SPD",
+          "variables": [
+            {
+              "name": "Start_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Stop_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Speed_High_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Speed_Low_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Motor_Start_Out",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Running",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Trip",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_HighSpeed",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_LowSpeed",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Speed_Error",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "IF Inhibit OR Stop_Cmd THEN\n    Motor_Start_Out := FALSE;\nELSIF Start_Cmd THEN\n    Motor_Start_Out := TRUE;\nEND_IF;\nFB_Running := Motor_Start_Out;\nFB_HighSpeed := Motor_Start_Out AND Speed_High_Cmd;\nFB_LowSpeed := Motor_Start_Out AND Speed_Low_Cmd AND NOT Speed_High_Cmd;\nFB_Trip := FALSE;\nAlarm_Speed_Error := Speed_High_Cmd AND Speed_Low_Cmd;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "MOTOR_ON_OFF",
+          "variables": [
+            {
+              "name": "Start_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Stop_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Start_Delay",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "MinRunTime",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Motor_Start_Out",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Running",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Trip",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Start_Fail",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Stop_Fail",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "IF Inhibit OR Stop_Cmd THEN\n    Motor_Start_Out := FALSE;\nELSIF Start_Cmd THEN\n    Motor_Start_Out := TRUE;\nEND_IF;\nFB_Running := Motor_Start_Out;\nFB_Trip := FALSE;\nAlarm_Start_Fail := FALSE;\nAlarm_Stop_Fail := FALSE;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "MOTOR_VSD",
+          "variables": [
+            {
+              "name": "Start_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Stop_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Speed_SP",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Accel_Ramp",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Decel_Ramp",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Speed_Out",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Running",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Fault",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Ready",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_ActualSpeed",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Speed_Deviation",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Comm_Fail",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "IF Inhibit OR Stop_Cmd THEN\n    FB_Running := FALSE;\nELSIF Start_Cmd THEN\n    FB_Running := TRUE;\nEND_IF;\nIF FB_Running THEN\n    Speed_Out := Speed_SP;\nELSE\n    Speed_Out := 0.0;\nEND_IF;\nFB_Ready := NOT Inhibit;\nFB_Fault := FALSE;\nFB_ActualSpeed := Speed_Out;\nAlarm_Speed_Deviation := FALSE;\nAlarm_Comm_Fail := FALSE;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "PID_BASIC",
+          "variables": [
+            {
+              "name": "AUTO",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "MV_MIN",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "MV_MAX",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "X0",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "KP",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "TR",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "TD",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV_High",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV_Low",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Deviation_Limit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV_High_Alarm",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PV_Low_Alarm",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Deviation_Alarm",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "XOUT",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "PV_High_Alarm := PV > PV_High;\nPV_Low_Alarm := PV < PV_Low;\nDeviation_Alarm := ABS(SP - PV) > Deviation_Limit;\n(* Bounded proportional control law (single-block, stateless). *)\nIF Inhibit THEN\n    XOUT := MV_MIN;\nELSIF AUTO THEN\n    XOUT := LIMIT(MV_MIN, X0 + KP * (SP - PV), MV_MAX);\nELSE\n    XOUT := X0;\nEND_IF;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "RATIO_CONTROL",
+          "variables": [
+            {
+              "name": "Auto",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PrimaryPV",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SecondaryPV",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "RatioSP",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Bias",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "TrimKp",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "TrimTi",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "MV_MIN",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "MV_MAX",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ManOut",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SlaveSP",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ActiveRatio",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "RatioErr",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "IF PrimaryPV > 0.0 THEN\n    ActiveRatio := SecondaryPV / PrimaryPV;\nELSE\n    ActiveRatio := 0.0;\nEND_IF;\nRatioErr := ActiveRatio - RatioSP;\nIF Inhibit THEN\n    SlaveSP := MV_MIN;\nELSIF Auto THEN\n    SlaveSP := LIMIT(MV_MIN, PrimaryPV * RatioSP + Bias, MV_MAX);\nELSE\n    SlaveSP := ManOut;\nEND_IF;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "SPLIT_RANGE",
+          "variables": [
+            {
+              "name": "IN",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Split_Point",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Output1_Start",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Output1_End",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Output2_Start",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Output2_End",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "OUT1",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "OUT2",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "IF IN <= Split_Point THEN\n    OUT1 := Output1_End;\n    OUT2 := Output2_Start;\nELSE\n    OUT1 := Output1_Start;\n    OUT2 := Output2_End;\nEND_IF;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "VALVE_ELECTRIC",
+          "variables": [
+            {
+              "name": "Control_Signal",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Manual_Mode",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Manual_Position",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Open_Limit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Close_Limit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Timeout",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Valve_Position",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Feedback_Pos",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Valve_Moving",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Position_Error",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "IF Inhibit THEN\n    Valve_Position := Close_Limit;\nELSIF Manual_Mode THEN\n    Valve_Position := LIMIT(Close_Limit, Manual_Position, Open_Limit);\nELSE\n    Valve_Position := LIMIT(Close_Limit, Control_Signal, Open_Limit);\nEND_IF;\nFeedback_Pos := Valve_Position;\nValve_Moving := FALSE;\nPosition_Error := FALSE;\nAlarm := Inhibit;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "VALVE_ON_OFF",
+          "variables": [
+            {
+              "name": "Open_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Close_Cmd",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Timeout",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "time"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Opened",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FB_Closed",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Valve_Open_Out",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Valve_Close_Out",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Position_Error",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_General",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "IF Inhibit THEN\n    Valve_Open_Out := FALSE;\n    Valve_Close_Out := TRUE;\nELSE\n    Valve_Open_Out := Open_Cmd AND NOT Close_Cmd;\n    Valve_Close_Out := Close_Cmd OR NOT Open_Cmd;\nEND_IF;\nFB_Opened := Valve_Open_Out;\nFB_Closed := NOT Valve_Open_Out;\nAlarm_Position_Error := FALSE;\nAlarm_General := Inhibit;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "function-block",
+        "data": {
+          "language": "st",
+          "name": "VOTING_ANALOG",
+          "variables": [
+            {
+              "name": "Input1",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Input2",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Input3",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Deviation_Limit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Voting_Scheme",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "string"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "EnableAlarm",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit",
+              "class": "input",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Voted_Output",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Sensor1_Fault",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Sensor2_Fault",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Sensor3_Fault",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Alarm_Voting_Error",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Healthy_Sensors_Count",
+              "class": "output",
+              "type": {
+                "definition": "base-type",
+                "value": "int"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "Voted_Output := (Input1 + Input2 + Input3) / 3.0;\nSensor1_Fault := FALSE;\nSensor2_Fault := FALSE;\nSensor3_Fault := FALSE;\nAlarm_Voting_Error := FALSE;\nHealthy_Sensors_Count := 3;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "program",
+        "data": {
+          "language": "st",
+          "name": "Section2",
+          "variables": [
+            {
+              "name": "FT101_Flow_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FT102_Flow_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AT101_Analyzer_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AT103_Analyzer_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT104_Level_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT105_Level_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FC101_MV_Out",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FC102_MV_Out",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV101_Valve_Position",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV102_Valve_Position",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_PctCmd",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_PctCmd",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FlowDevAlarm101",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FlowDevAlarm102",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AT_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AT_103",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FC_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "PID_BASIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FC_102",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "PID_BASIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FT_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FT_102",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "VALVE_ELECTRIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV_102",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "VALVE_ELECTRIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT_104",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT_105",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "XV_102",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "VALVE_ON_OFF"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_DevDelay_TON",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "TON"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_DevDelay_TON",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "TON"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "XV102NotOpen_NOT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Contamination_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV101_Inhibit_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV102_Inhibit_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_PctNorm_DIV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_PctScaled_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_PctOffset_ADD",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_PctToFrac_DIV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_SP_EU_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "DL101_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_1p1_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_0p9_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_PV_GT_HighThresh",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_PV_LT_LowThresh",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP101_DevBand_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_PctNorm_DIV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_PctScaled_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_PctOffset_ADD",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_PctToFrac_DIV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_SP_EU_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "DL102_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_1p1_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_0p9_MULT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_PV_GT_HighThresh",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_PV_LT_LowThresh",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SP102_DevBand_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "AT_101(\n    PV_High := 50.0,\n    Alarm_Enable := TRUE);\nAT_103(\n    PV_High := 35.0,\n    Alarm_Enable := TRUE);\nSP101_PctNorm_DIV := SP101_PctCmd / 100.0;\nSP101_PctScaled_MULT := SP101_PctNorm_DIV * 59.0;\nSP101_PctOffset_ADD := SP101_PctScaled_MULT + 16.0;\nSP101_PctToFrac_DIV := SP101_PctOffset_ADD / 100.0;\nSP101_SP_EU_MULT := SP101_PctToFrac_DIV * 5000.0;\nDL101_MULT := SP101_SP_EU_MULT * 0.1;\nFT_101(\n    PV_High := 5500.0,\n    PV_Low := 450.0,\n    Scaling_Slope := 312.5,\n    Scaling_Offset := -1250.0,\n    Alarm_Enable := TRUE);\nFC_101(\n    AUTO := TRUE,\n    PV := FT_101.PV,\n    SP := SP101_SP_EU_MULT,\n    MV_MIN := 0.0,\n    MV_MAX := 100.0,\n    X0 := 0.0,\n    KP := 2.5,\n    TR := 0.8,\n    TD := 0.2,\n    Deviation_Limit := DL101_MULT,\n    Inhibit := FT_101.General_Fault);\nSP102_PctNorm_DIV := SP102_PctCmd / 100.0;\nSP102_PctScaled_MULT := SP102_PctNorm_DIV * 59.0;\nSP102_PctOffset_ADD := SP102_PctScaled_MULT + 16.0;\nSP102_PctToFrac_DIV := SP102_PctOffset_ADD / 100.0;\nSP102_SP_EU_MULT := SP102_PctToFrac_DIV * 3000.0;\nDL102_MULT := SP102_SP_EU_MULT * 0.1;\nFT_102(\n    PV_High := 3300.0,\n    PV_Low := 270.0,\n    Scaling_Slope := 187.5,\n    Scaling_Offset := -750.0,\n    Alarm_Enable := TRUE);\nFC_102(\n    AUTO := TRUE,\n    PV := FT_102.PV,\n    SP := SP102_SP_EU_MULT,\n    MV_MIN := 0.0,\n    MV_MAX := 100.0,\n    X0 := 0.0,\n    KP := 2.5,\n    TR := 0.8,\n    TD := 0.2,\n    Deviation_Limit := DL102_MULT,\n    Inhibit := FT_102.General_Fault);\nContamination_OR := AT_101.High_Alarm OR AT_103.High_Alarm;\nLT_104(\n    PV_Low := 2.0,\n    Alarm_Enable := TRUE);\nLT_105(\n    Alarm_Enable := TRUE);\nXV_102(\n    Inhibit := Contamination_OR);\nXV102NotOpen_NOT := NOT XV_102.FB_Opened;\nFV101_Inhibit_OR := XV102NotOpen_NOT OR Contamination_OR OR LT_104.Low_Alarm OR LT_105.High_Alarm OR FT_101.General_Fault;\nFV_101(\n    Control_Signal := FC_101.XOUT,\n    Manual_Mode := FALSE,\n    Manual_Position := 0.0,\n    Open_Limit := 100.0,\n    Close_Limit := 0.0,\n    Inhibit := FV101_Inhibit_OR);\nFV102_Inhibit_OR := XV102NotOpen_NOT OR Contamination_OR OR LT_104.Low_Alarm OR LT_105.High_Alarm OR FT_102.General_Fault;\nFV_102(\n    Control_Signal := FC_102.XOUT,\n    Manual_Mode := FALSE,\n    Manual_Position := 0.0,\n    Open_Limit := 100.0,\n    Close_Limit := 0.0,\n    Inhibit := FV102_Inhibit_OR);\nSP101_1p1_MULT := SP101_SP_EU_MULT * 1.1;\nSP101_PV_GT_HighThresh := (FT_101.PV > SP101_1p1_MULT);\nSP101_0p9_MULT := SP101_SP_EU_MULT * 0.9;\nSP101_PV_LT_LowThresh := (FT_101.PV < SP101_0p9_MULT);\nSP101_DevBand_OR := SP101_PV_GT_HighThresh OR SP101_PV_LT_LowThresh;\nSP101_DevDelay_TON(\n    IN := SP101_DevBand_OR,\n    PT := T#30s);\nSP102_1p1_MULT := SP102_SP_EU_MULT * 1.1;\nSP102_PV_GT_HighThresh := (FT_102.PV > SP102_1p1_MULT);\nSP102_0p9_MULT := SP102_SP_EU_MULT * 0.9;\nSP102_PV_LT_LowThresh := (FT_102.PV < SP102_0p9_MULT);\nSP102_DevBand_OR := SP102_PV_GT_HighThresh OR SP102_PV_LT_LowThresh;\nSP102_DevDelay_TON(\n    IN := SP102_DevBand_OR,\n    PT := T#30s);\n\n(* Outputs published to other sections / HMI. *)\nFT101_Flow_PV := FT_101.PV;\nFT102_Flow_PV := FT_102.PV;\nAT101_Analyzer_PV := AT_101.PV;\nAT103_Analyzer_PV := AT_103.PV;\nLT104_Level_PV := LT_104.PV;\nLT105_Level_PV := LT_105.PV;\nFC101_MV_Out := FC_101.XOUT;\nFC102_MV_Out := FC_102.XOUT;\nFV101_Valve_Position := FV_101.Valve_Position;\nFV102_Valve_Position := FV_102.Valve_Position;\nFlowDevAlarm101 := SP101_DevDelay_TON.Q;\nFlowDevAlarm102 := SP102_DevDelay_TON.Q;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "program",
+        "data": {
+          "language": "st",
+          "name": "Section3",
+          "variables": [
+            {
+              "name": "FT102_SP_FromRatio",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV105_Feedback_Position",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FFIC_103",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "RATIO_CONTROL"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_104",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "PID_BASIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV_105",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "VALVE_ELECTRIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FT_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FT_102",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PT_103",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PT_104",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PIT_105",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PIT_106",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PT_108",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SW_SCREEN_1",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SW_SCREEN_2",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SW_SCREEN_3",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SW_SCREEN_4",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SW_SCREEN_5",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SW_SCREEN_6",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "RES_SCREEN_1",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "RES_SCREEN_2",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "RES_SCREEN_3",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "RES_SCREEN_4",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LowFlowOn",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LowFlowOff",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LowFlowLatch",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AutoEnableInv",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "DownstreamOutOfRange",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SupplyPressureTrip",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ValveInhibit",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen1Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen2Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen3Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen4Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen5Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen6Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res1Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res2Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res3Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res4Others",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen1WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen2WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen3WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen4WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen5WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Screen6WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res1WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res2WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res3WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Res4WithAnother",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ScreenConflict",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "RatioInhibit",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "FT_101(\n    PV_Low := 50.0,\n    Scaling_Slope := 31.25,\n    Scaling_Offset := -125.0,\n    Alarm_Enable := TRUE);\nFT_102(\n    Scaling_Slope := 31.25,\n    Scaling_Offset := -125.0);\nPIT_105(\n    Alarm_Enable := TRUE);\nPIT_106(\n    Alarm_Enable := TRUE);\nDownstreamOutOfRange := PIT_105.Low_Alarm OR PIT_105.High_Alarm OR PIT_106.Low_Alarm OR PIT_106.High_Alarm;\nLowFlowOff := (FT_101.PV > 50.0);\nLowFlowOn := (FT_101.PV < 50.0);\nLowFlowLatch := (LowFlowOn OR LowFlowLatch) AND NOT LowFlowOff;\nAutoEnableInv := NOT LowFlowLatch;\nFIC_104(\n    AUTO := AutoEnableInv,\n    PV := FT_102.PV,\n    SP := FFIC_103.SlaveSP);\nPT_108(\n    PV_High := 9.0,\n    PV_Low := 5.0,\n    Alarm_Enable := TRUE);\nSupplyPressureTrip := PT_108.Low_Alarm OR PT_108.High_Alarm;\nValveInhibit := DownstreamOutOfRange OR SupplyPressureTrip;\nFV_105(\n    Control_Signal := FIC_104.XOUT,\n    Timeout := T#2s,\n    Inhibit := ValveInhibit);\nPT_103(\n    Alarm_Enable := TRUE);\nPT_104(\n    Alarm_Enable := TRUE);\nRES_SCREEN_1();\nRES_SCREEN_2();\nRES_SCREEN_3();\nRES_SCREEN_4();\nSW_SCREEN_1();\nSW_SCREEN_2();\nSW_SCREEN_3();\nSW_SCREEN_4();\nSW_SCREEN_5();\nSW_SCREEN_6();\nRes1Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nRes1WithAnother := RES_SCREEN_1.Bool_Out AND Res1Others;\nRes2Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nRes2WithAnother := RES_SCREEN_2.Bool_Out AND Res2Others;\nRes3Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_4.Bool_Out;\nRes3WithAnother := RES_SCREEN_3.Bool_Out AND Res3Others;\nRes4Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out;\nRes4WithAnother := RES_SCREEN_4.Bool_Out AND Res4Others;\nScreen1Others := SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nScreen1WithAnother := SW_SCREEN_1.Bool_Out AND Screen1Others;\nScreen2Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nScreen2WithAnother := SW_SCREEN_2.Bool_Out AND Screen2Others;\nScreen3Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nScreen3WithAnother := SW_SCREEN_3.Bool_Out AND Screen3Others;\nScreen4Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_5.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nScreen4WithAnother := SW_SCREEN_4.Bool_Out AND Screen4Others;\nScreen5Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_6.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nScreen5WithAnother := SW_SCREEN_5.Bool_Out AND Screen5Others;\nScreen6Others := SW_SCREEN_1.Bool_Out OR SW_SCREEN_2.Bool_Out OR SW_SCREEN_3.Bool_Out OR SW_SCREEN_4.Bool_Out OR SW_SCREEN_5.Bool_Out OR RES_SCREEN_1.Bool_Out OR RES_SCREEN_2.Bool_Out OR RES_SCREEN_3.Bool_Out OR RES_SCREEN_4.Bool_Out;\nScreen6WithAnother := SW_SCREEN_6.Bool_Out AND Screen6Others;\nScreenConflict := Screen1WithAnother OR Screen2WithAnother OR Screen3WithAnother OR Screen4WithAnother OR Screen5WithAnother OR Screen6WithAnother OR Res1WithAnother OR Res2WithAnother OR Res3WithAnother OR Res4WithAnother;\nRatioInhibit := PT_103.Low_Alarm OR DownstreamOutOfRange OR SupplyPressureTrip OR FV_105.Position_Error OR ScreenConflict OR FIC_104.Deviation_Alarm OR LowFlowLatch OR PT_104.Low_Alarm;\nFFIC_103(\n    PrimaryPV := FT_101.PV,\n    SecondaryPV := FT_102.PV,\n    RatioSP := 2.0,\n    MV_MIN := 0.0,\n    MV_MAX := 500.0,\n    Inhibit := RatioInhibit);\n\n(* Outputs published to other sections / HMI. *)\nFT102_SP_FromRatio := FFIC_103.SlaveSP;\nFV105_Feedback_Position := FV_105.Feedback_Pos;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "program",
+        "data": {
+          "language": "st",
+          "name": "Section4",
+          "variables": [
+            {
+              "name": "FT_101_Flow_PV_m3ph",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT_101_SumpLevel_m",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_101_MV_Percent",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_101_SP_m3ph",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Flow_Deviation_Alarm",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FT_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "PID_BASIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "VFD_101A",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_VSD"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "VFD_101B",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_VSD"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "VFD_101C",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_VSD"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "VFD_101D",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_VSD"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SPUMP_201A",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_ON_OFF"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SPUMP_201B",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_ON_OFF"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "M103A",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "DIGITAL_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "M103B",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "DIGITAL_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "M103C",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "DIGITAL_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "M103D",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "DIGITAL_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FlowDeviationHold",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "TON"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "SumpLevelOutOfRange",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit_101A",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit_101B",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit_101C",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "Inhibit_101D",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "FT_101(\n    Scaling_Slope := 31.25,\n    Scaling_Offset := -125.0,\n    Alarm_Enable := TRUE);\nLT_101(\n    PV_High := 9.0,\n    PV_Low := 1.5,\n    Scaling_Slope := 0.625,\n    Scaling_Offset := -2.5,\n    Alarm_Enable := TRUE);\nSumpLevelOutOfRange := LT_101.Low_Alarm OR LT_101.High_Alarm;\nFIC_101(\n    AUTO := TRUE,\n    PV := FT_101.PV,\n    SP := FIC_101_SP_m3ph,\n    MV_MIN := 0.0,\n    MV_MAX := 100.0,\n    X0 := 0.0,\n    KP := 2.5,\n    TR := 0.8,\n    TD := 0.2,\n    Deviation_Limit := 10.0,\n    Inhibit := SumpLevelOutOfRange);\nM103A();\nInhibit_101A := SumpLevelOutOfRange OR M103A.DI_Out OR VFD_101A.FB_Fault;\nVFD_101A(\n    Speed_SP := FIC_101.XOUT,\n    Inhibit := Inhibit_101A);\nM103B();\nInhibit_101B := SumpLevelOutOfRange OR M103B.DI_Out OR VFD_101B.FB_Fault;\nVFD_101B(\n    Inhibit := Inhibit_101B);\nM103C();\nInhibit_101C := SumpLevelOutOfRange OR M103C.DI_Out OR VFD_101C.FB_Fault;\nVFD_101C(\n    Inhibit := Inhibit_101C);\nM103D();\nInhibit_101D := SumpLevelOutOfRange OR M103D.DI_Out OR VFD_101D.FB_Fault;\nVFD_101D(\n    Inhibit := Inhibit_101D);\nSPUMP_201A();\nSPUMP_201B();\nFlowDeviationHold(\n    IN := FIC_101.Deviation_Alarm,\n    PT := T#30s);\n\n(* Outputs published to other sections / HMI. *)\nFlow_Deviation_Alarm := FlowDeviationHold.Q;\nFT_101_Flow_PV_m3ph := FT_101.PV;\nLT_101_SumpLevel_m := LT_101.PV;\nFIC_101_MV_Percent := FIC_101.XOUT;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "program",
+        "data": {
+          "language": "st",
+          "name": "Section5",
+          "variables": [
+            {
+              "name": "FT_301_FlowRate_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT_301_Level_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_301_MV_FlowControl_Percent",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "XV_107_Open_FB",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FT_301",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LT_301",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_301",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "PID_BASIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV_301",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "VALVE_ELECTRIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "XV_107",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "VALVE_ON_OFF"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "UMP_301A",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_VSD"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "UMP_301B",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "MOTOR_VSD"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ANK_301",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PAH_103",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "DIGITAL_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "TAH_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "DIGITAL_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "NotXVOpen_NOT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PumpsAvailable_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "NotPumpsAvailable_NOT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LevelNotAbove20_NOT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PumpInhibit_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "ValveTrips_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "PIDInhibit_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "FT_301(\n    PV_High := 48.0,\n    PV_Low := 8.0,\n    Scaling_Slope := 3.125,\n    Scaling_Offset := -12.5,\n    Alarm_Enable := TRUE);\nLT_301(\n    Alarm_Enable := TRUE);\nANK_301();\nLevelNotAbove20_NOT := NOT LT_301.High_Alarm;\nUMP_301A(\n    Speed_SP := FIC_301.XOUT,\n    Inhibit := PumpInhibit_OR);\nUMP_301B(\n    Inhibit := PumpInhibit_OR);\nPumpsAvailable_OR := UMP_301A.FB_Ready OR UMP_301B.FB_Ready;\nNotPumpsAvailable_NOT := NOT PumpsAvailable_OR;\nXV_107();\nNotXVOpen_NOT := NOT XV_107.FB_Opened;\nPumpInhibit_OR := NotXVOpen_NOT OR NotPumpsAvailable_NOT OR ANK_301.Bool_Out OR LT_301.Low_Alarm OR LevelNotAbove20_NOT;\nPAH_103();\nTAH_101();\nValveTrips_OR := PAH_103.DI_Out OR TAH_101.DI_Out OR LT_301.Low_Alarm OR ANK_301.Bool_Out;\nPIDInhibit_OR := PumpInhibit_OR OR ValveTrips_OR;\nFIC_301(\n    PV := FT_301.PV,\n    SP := 30.0,\n    MV_MIN := 5.0,\n    MV_MAX := 95.0,\n    X0 := UMP_301A.FB_ActualSpeed,\n    KP := 1.8,\n    TR := 0.5,\n    TD := 0.05,\n    Inhibit := PIDInhibit_OR);\nFV_301(\n    Open_Limit := 100.0,\n    Close_Limit := 0.0,\n    Inhibit := ValveTrips_OR);\n\n(* Outputs published to other sections / HMI. *)\nFT_301_FlowRate_PV := FT_301.PV;\nLT_301_Level_PV := LT_301.PV;\nFIC_301_MV_FlowControl_Percent := FIC_301.XOUT;\nXV_107_Open_FB := XV_107.FB_Opened;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "program",
+        "data": {
+          "language": "st",
+          "name": "Section6",
+          "variables": [
+            {
+              "name": "FIT101_BypassFlow_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIT102_SamplingFlow_PV",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC104_SamplingFlow_SP",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC104_ActiveRatio",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "real"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AT105_Permissive",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LV103_Permissive",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIT_101",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIT_102",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "ANALOG_IN"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_104",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "RATIO_CONTROL"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FIC_104_SLAVE",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "PID_BASIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "FV_102",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "VALVE_ELECTRIC"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "AT_105",
+              "class": "local",
+              "type": {
+                "definition": "derived",
+                "value": "BOOL_INPUT"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "MasterInhibit_OR",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            },
+            {
+              "name": "LV103_Permissive_NOT",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "FIT_101(\n    Scaling_Slope := 62.5,\n    Scaling_Offset := -250.0,\n    Alarm_Enable := TRUE);\nFIT_102(\n    Alarm_Enable := TRUE);\nAT_105(\n    Bool_In := AT105_Permissive,\n    Alarm_OnTrue := FALSE,\n    Alarm_OnFalse := TRUE,\n    Latch_Enable := TRUE);\nLV103_Permissive_NOT := NOT LV103_Permissive;\nMasterInhibit_OR := FIT_101.Low_Alarm OR FIT_101.General_Fault OR AT_105.Alarm_Active OR LV103_Permissive_NOT;\nFIC_104(\n    Auto := TRUE,\n    PrimaryPV := FIT_101.PV,\n    SecondaryPV := FIT_102.PV,\n    RatioSP := 0.1,\n    MV_MIN := 0.0,\n    MV_MAX := 200.0,\n    Inhibit := MasterInhibit_OR);\nFIC_104_SLAVE(\n    AUTO := TRUE,\n    PV := FIT_102.PV,\n    SP := FIC_104.SlaveSP,\n    MV_MIN := 0.0,\n    MV_MAX := 100.0,\n    X0 := 0.0,\n    KP := 1.0,\n    TR := 10.0,\n    TD := 0.0,\n    Deviation_Limit := 20.0,\n    Inhibit := MasterInhibit_OR);\nFV_102(\n    Control_Signal := FIC_104_SLAVE.XOUT,\n    Manual_Mode := FALSE,\n    Open_Limit := 100.0,\n    Close_Limit := 0.0,\n    Inhibit := MasterInhibit_OR);\n\n(* Outputs published to other sections / HMI. *)\nFIT101_BypassFlow_PV := FIT_101.PV;\nFIT102_SamplingFlow_PV := FIT_102.PV;\nFIC104_SamplingFlow_SP := FIC_104.SlaveSP;\nFIC104_ActiveRatio := FIC_104.ActiveRatio;"
+          },
+          "documentation": ""
+        }
+      },
+      {
+        "type": "program",
+        "data": {
+          "language": "st",
+          "name": "main",
+          "variables": [
+            {
+              "name": "Heartbeat",
+              "class": "local",
+              "type": {
+                "definition": "base-type",
+                "value": "bool"
+              },
+              "location": "",
+              "documentation": ""
+            }
+          ],
+          "body": {
+            "language": "st",
+            "value": "(* Entry point required by OpenPLC Editor v4. The process sections run as parallel program instances under task0; main only provides a scan heartbeat. *)\nHeartbeat := NOT Heartbeat;"
+          },
+          "documentation": ""
+        }
+      }
+    ],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#20ms",
+            "priority": 0
+          }
+        ],
+        "instances": [
+          {
+            "name": "inst_main",
+            "task": "task0",
+            "program": "main"
+          },
+          {
+            "name": "inst_section2",
+            "task": "task0",
+            "program": "Section2"
+          },
+          {
+            "name": "inst_section3",
+            "task": "task0",
+            "program": "Section3"
+          },
+          {
+            "name": "inst_section4",
+            "task": "task0",
+            "program": "Section4"
+          },
+          {
+            "name": "inst_section5",
+            "task": "task0",
+            "program": "Section5"
+          },
+          {
+            "name": "inst_section6",
+            "task": "task0",
+            "program": "Section6"
+          }
+        ],
+        "globalVariables": []
+      }
+    },
+    "debugVariables": {
+      "pous": {
+        "Section2": [
+          "FT101_Flow_PV",
+          "FT102_Flow_PV",
+          "AT101_Analyzer_PV",
+          "AT103_Analyzer_PV",
+          "LT104_Level_PV",
+          "LT105_Level_PV",
+          "FC101_MV_Out",
+          "FC102_MV_Out",
+          "FV101_Valve_Position",
+          "FV102_Valve_Position",
+          "SP101_PctCmd",
+          "SP102_PctCmd",
+          "FlowDevAlarm101",
+          "FlowDevAlarm102"
+        ],
+        "Section3": [
+          "FT102_SP_FromRatio",
+          "FV105_Feedback_Position"
+        ],
+        "Section4": [
+          "FT_101_Flow_PV_m3ph",
+          "LT_101_SumpLevel_m",
+          "FIC_101_MV_Percent",
+          "FIC_101_SP_m3ph",
+          "Flow_Deviation_Alarm"
+        ],
+        "Section5": [
+          "FT_301_FlowRate_PV",
+          "LT_301_Level_PV",
+          "FIC_301_MV_FlowControl_Percent",
+          "XV_107_Open_FB"
+        ],
+        "Section6": [
+          "FIT101_BypassFlow_PV",
+          "FIT102_SamplingFlow_PV",
+          "FIC104_SamplingFlow_SP",
+          "FIC104_ActiveRatio",
+          "AT105_Permissive",
+          "LV103_Permissive"
+        ],
+        "main": [
+          "Heartbeat"
+        ]
+      }
+    }
+  }
+}

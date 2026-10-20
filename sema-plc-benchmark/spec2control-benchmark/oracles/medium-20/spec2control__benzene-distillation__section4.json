@@ -1,0 +1,30 @@
+{
+  "task_id": "spec2control/benzene-distillation/section4",
+  "source": "derived from Spec2Control tests/test_benzene_section2_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "structure_required",
+      "value": "Permissive_OK"
+    },
+    {
+      "type": "contains",
+      "value": "Permissive"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "contains",
+      "value": "Inhibit"
+    },
+    {
+      "type": "contains",
+      "value": "High_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    }
+  ]
+}

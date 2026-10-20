@@ -80,3 +80,10 @@ Both packages' runtime/dev dependencies are resolved from the npm registry under
 licenses (MIT / ISC / BSD / Apache-2.0 / BlueOak-1.0.0 / 0BSD). The authoritative license
 text for each ships in `node_modules/<package>/LICENSE`; resolved versions are pinned in each
 package's `package-lock.json` for reproducible installs and license traceability.
+
+## Benchmark datasets
+
+`sema-plc-benchmark/` adds Agents4PLC and Spec2Control datasets with their
+Apache-2.0 license texts and modification notices.
+See [benchmark third-party notices](sema-plc-benchmark/THIRD_PARTY.md) for paths,
+and provenance. Evaluation tools are not included in this data distribution.

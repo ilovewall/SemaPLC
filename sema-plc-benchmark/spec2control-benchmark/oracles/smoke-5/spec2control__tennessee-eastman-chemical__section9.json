@@ -1,0 +1,14 @@
+{
+  "task_id": "spec2control/tennessee-eastman-chemical/section9",
+  "source": "derived from Spec2Control tests/test_tennessee_eastman_runtime.py without Sim_* runtime-only variable leakage",
+  "assertions": [
+    {"type": "contains", "value": "Inhibit"},
+    {"type": "contains", "value": "Alarm"},
+    {"type": "call_required", "value": "FIC_103"},
+    {"type": "any_contains", "values": ["LevelValid", "Level_Valid", "Level_OK"]},
+    {"type": "any_contains", "values": ["Open_Cmd", "XV_104", "XV104"]},
+    {"type": "numeric_constant", "value": "6.25"},
+    {"type": "numeric_constant", "value": "-25.0"},
+    {"type": "numeric_constant", "value": "45.0"}
+  ]
+}

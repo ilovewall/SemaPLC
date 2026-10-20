@@ -1,0 +1,30 @@
+{
+  "task_id": "spec2control/paper-machine/section3",
+  "source": "derived from Spec2Control tests/test_paper_machine_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "800.0"
+    },
+    {
+      "type": "structure_required",
+      "value": "PV_High"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "850.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "170.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "11.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-25.0"
+    }
+  ]
+}

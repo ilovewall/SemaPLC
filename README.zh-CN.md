@@ -214,3 +214,8 @@ Sema PLC 自身代码以 [MIT 许可证](LICENSE) 发布。
 (matiec、rusty、OpenPLC)——属一臂之遥的进程调用,其 copyleft 不会传染到本 MIT 源码。
 各组件许可证、聚合(aggregation)依据,以及 Docker 镜像再分发义务,详见
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+
+## Benchmark
+
+[PLC benchmark 数据集](sema-plc-benchmark/README.md)提供 Agents4PLC 与 Spec2Control
+的任务、参考数据和数据说明，不包含评测或自动做题脚本。

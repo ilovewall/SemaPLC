@@ -1,0 +1,18 @@
+{
+  "task_id": "spec2control/ammonium-nitrates/section5",
+  "source": "derived from Spec2Control tests/test_ammonium_nitrates_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "45.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.5"
+    },
+    {
+      "type": "contains",
+      "value": "Permissive"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "task_id": "spec2control/benzene-distillation/section2",
+  "source": "derived from Spec2Control tests/test_benzene_section2_runtime.py without Sim_* runtime-only variable leakage",
+  "assertions": [
+    {"type": "call_required", "value": "TIC_104"},
+    {"type": "call_required", "value": "XV_105"},
+    {"type": "call_required", "value": "PV_103"},
+    {"type": "numeric_constant", "value": "150.0"},
+    {"type": "numeric_constant", "value": "10.0"},
+    {"type": "numeric_constant", "value": "90.0"},
+    {"type": "numeric_constant", "value": "9.375"},
+    {"type": "numeric_constant", "value": "12.5"},
+    {"type": "numeric_constant", "value": "3.0"},
+    {"type": "contains", "value": "Inhibit"},
+    {"type": "any_contains", "values": ["Open_Cmd", "FB_Opened", "XV105_NotOpen"]},
+    {"type": "contains", "value": "High_Alarm"},
+    {"type": "contains", "value": "Low_Alarm"}
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "task_id": "spec2control/steel-plant/section3",
+  "source": "manual oracle derived from Spec2Control steel-plant chapter_3 spec and reviewed baseline; runtime-only Start_Cmd simulation requirement is excluded",
+  "assertions": [
+    {
+      "type": "call_required",
+      "value": "PT_201_VOTE"
+    },
+    {
+      "type": "call_required",
+      "value": "TT_201_VOTE"
+    },
+    {
+      "type": "call_required",
+      "value": "P_201"
+    },
+    {
+      "type": "structure_required",
+      "value": "PressureInhibit"
+    },
+    {
+      "type": "structure_required",
+      "value": "TemperatureInhibit"
+    },
+    {
+      "type": "structure_required",
+      "value": "StartPermissiveOK"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "100.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "75.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "21.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "5.0"
+    },
+    {
+      "type": "contains",
+      "value": "Voting_Scheme"
+    },
+    {
+      "type": "contains",
+      "value": "Inhibit"
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "General_Fault"
+    }
+  ]
+}

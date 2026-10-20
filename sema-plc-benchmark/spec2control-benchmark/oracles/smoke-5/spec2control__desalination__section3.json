@@ -1,0 +1,18 @@
+{
+  "task_id": "spec2control/desalination/section3",
+  "source": "derived from Spec2Control tests/test_desalination_runtime.py without Sim_* runtime-only variable leakage",
+  "assertions": [
+    {"type": "contains", "value": "Inhibit"},
+    {"type": "contains", "value": "Alarm"},
+    {"type": "call_required", "value": "FFIC_103"},
+    {"type": "call_required", "value": "FIC_104"},
+    {"type": "call_required", "value": "FV_105"},
+    {"type": "any_contains", "values": ["RATIO", "Ratio", "ratio"]},
+    {"type": "numeric_constant", "value": "9.0"},
+    {"type": "numeric_constant", "value": "5.0"},
+    {"type": "numeric_constant", "value": "2.0"},
+    {"type": "numeric_constant", "value": "500.0"},
+    {"type": "numeric_constant", "value": "31.25"},
+    {"type": "numeric_constant", "value": "-125.0"}
+  ]
+}

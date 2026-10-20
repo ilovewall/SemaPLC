@@ -1,0 +1,66 @@
+{
+  "task_id": "spec2control/lng-production/section7",
+  "source": "derived from Spec2Control tests/test_lng_production_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "numeric_constant",
+      "value": "50.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "4500.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "100.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "312.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-1250.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "900.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "62.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-250.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "6.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-25.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.2"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "1000.0"
+    },
+    {
+      "type": "any_contains",
+      "values": [
+        "RATIO",
+        "Ratio",
+        "ratio"
+      ]
+    }
+  ]
+}

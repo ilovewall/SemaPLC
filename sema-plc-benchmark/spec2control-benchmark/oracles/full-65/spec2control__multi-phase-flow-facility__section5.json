@@ -1,0 +1,58 @@
+{
+  "task_id": "spec2control/multi-phase-flow-facility/section5",
+  "source": "derived from Spec2Control tests/test_multi_phase_flow_facility_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "structure_required",
+      "value": "ValveOpenFB_Threshold"
+    },
+    {
+      "type": "contains",
+      "value": "Start_Cmd"
+    },
+    {
+      "type": "structure_required",
+      "value": "Open_Limit"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "100.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "50.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "6.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-25.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "90.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "20.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "25.0"
+    },
+    {
+      "type": "contains",
+      "value": "Low_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    }
+  ]
+}

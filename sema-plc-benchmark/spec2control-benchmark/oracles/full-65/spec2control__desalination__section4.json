@@ -1,0 +1,54 @@
+{
+  "task_id": "spec2control/desalination/section4",
+  "source": "derived from Spec2Control tests/test_desalination_runtime.py without runtime-only Sim_* variable requirements",
+  "assertions": [
+    {
+      "type": "structure_required",
+      "value": "Speed_SP"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "31.25"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-125.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "9.0"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "1.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "0.625"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "-2.5"
+    },
+    {
+      "type": "numeric_constant",
+      "value": "2.5"
+    },
+    {
+      "type": "contains",
+      "value": "High_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Low_Alarm"
+    },
+    {
+      "type": "contains",
+      "value": "Alarm"
+    }
+  ]
+}
