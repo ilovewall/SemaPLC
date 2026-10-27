@@ -125,6 +125,30 @@ export function makeCompileScriptForTest(): string {
   return makeCompileScriptLines().join('\n')
 }
 
+// execFile puts "spawn docker ENOENT" on Error.message and often leaves stderr "".
+// Preferring stderr blindly turns a missing engine into an empty iec2c failure.
+export function execFailureText(err: { stderr?: unknown; message?: unknown }): string {
+  const stderr = typeof err.stderr === 'string' ? err.stderr : ''
+  if (stderr.trim()) return stderr
+  if (typeof err.message === 'string' && err.message.trim()) return err.message
+  return String(err)
+}
+
+function execFailureCode(err: { exitCode?: unknown; code?: unknown }): number {
+  if (typeof err.exitCode === 'number') return err.exitCode
+  if (typeof err.code === 'number') return err.code
+  return 1
+}
+
+// Matiec never ran. Do not report this as an ST / iec2c failure.
+const RUNTIME_FAILURE_RE = /spawn\s+\S+\s+ENOENT|\bENOENT\b|command not found|executable file not found|Cannot connect to the Docker daemon|Is the docker daemon running|No such container|error during connect/i
+
+export function runtimeFailureSummary(stderr: string): string | null {
+  const raw = stderr.trim()
+  if (!raw || !RUNTIME_FAILURE_RE.test(raw)) return null
+  return `OpenPLC compile did not run because the container engine or openplc-plc-dev is unavailable. This is an environment failure, not an ST error. Install Docker and start the runtime (sema-plc-tools/runtime). Raw: ${raw.slice(0, 500)}`
+}
+
 async function realExec(stCode: string, container: string): Promise<ExecResult> {
   const bin = dockerBin()
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'plc-host-'))
@@ -153,9 +177,9 @@ async function realExec(stCode: string, container: string): Promise<ExecResult> 
     return { stdout: stdout.trim(), stderr, exitCode: 0 }
   } catch (err: any) {
     return {
-      stdout: err.stdout?.trim() ?? '',
-      stderr: err.stderr ?? String(err),
-      exitCode: err.exitCode ?? 1,
+      stdout: typeof err.stdout === 'string' ? err.stdout.trim() : '',
+      stderr: execFailureText(err),
+      exitCode: execFailureCode(err),
     }
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true })
@@ -177,7 +201,10 @@ export async function runCompileChain(
     const isXml2stDebug = exitCode === 2 || stderr.includes('xml2st_debug_failed')
     const isXml2stGlue = exitCode === 3 || stderr.includes('xml2st_gluevars_failed')
 
-    const failedStage = isXml2stGlue
+    const runtimeSummary = errors.length === 0 ? runtimeFailureSummary(stderr) : null
+    const failedStage = runtimeSummary
+      ? 'runtime'
+      : isXml2stGlue
       ? 'xml2st_gluevars'
       : isXml2stDebug
       ? 'xml2st_debug'
@@ -187,7 +214,9 @@ export async function runCompileChain(
     // bails out on a fatal syntax error). In that case surface the raw stderr
     // (truncated) so the agent isn't left blind — errors[] would be empty.
     let errorSummary: string
-    if (errors.length > 0) {
+    if (runtimeSummary) {
+      errorSummary = runtimeSummary
+    } else if (errors.length > 0) {
       errorSummary = `iec2c error at line ${errors[0].line}: ${errors[0].message}`
     } else {
       const raw = stderr.trim().slice(0, 500)
@@ -203,10 +232,10 @@ export async function runCompileChain(
     return {
       success: false,
       failedStage,
-      iec2c: { success: failedStage !== 'iec2c', errors, warnings, generatedFiles: [] },
+      iec2c: { success: failedStage !== 'iec2c' && failedStage !== 'runtime', errors, warnings, generatedFiles: [] },
       xml2st: {
-        debugSuccess: !isXml2stDebug,
-        glueVarsSuccess: !isXml2stGlue,
+        debugSuccess: failedStage === 'runtime' ? false : !isXml2stDebug,
+        glueVarsSuccess: failedStage === 'runtime' ? false : !isXml2stGlue,
         errors: isXml2stDebug || isXml2stGlue ? [stderr] : [],
       },
       variableMap: [],

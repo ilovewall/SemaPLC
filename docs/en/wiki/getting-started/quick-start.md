@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - **Node.js ≥ 18** and **npm**
-- **Docker** (Docker Desktop on macOS / Windows) — for the OpenPLC Runtime container
+- **Docker** — Docker Engine on Linux, or Docker Desktop on macOS / Windows — for the OpenPLC Runtime container. `scripts/smoke-host.sh` at the repo root does not need it.
 - An **LLM API key** (DeepSeek recommended; see [Model Configuration](en/wiki/getting-started/model-config) for the full list of supported providers)
 
 ## Install
@@ -81,4 +81,9 @@ Open **<http://localhost:5173>** and describe a control requirement in the chat 
 cd sema-plc-tools && npm test     # unit tests, no Docker needed
 cd sema-plc-tools && npm run test:integration   # integration tests, container must be running
 cd sema-plc-web   && npm test     # server: vitest/node, frontend: vitest/jsdom
+
+# host smoke, no Docker, after `npm install && npm run build` in sema-plc-tools
+./scripts/smoke-host.sh
 ```
+
+`smoke-host.sh` checks Node ≥ 18 and the offline CLI (`detectIO`, `genScene`). If `docker` is missing it prints `SKIP` for `compile`, `status`, and `./dev.sh` and exits 0. A compile result with `failedStage: "runtime"` means the container engine never started matiec.

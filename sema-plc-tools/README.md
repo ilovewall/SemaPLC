@@ -69,13 +69,24 @@ npm test                    # 555 unit tests, no Docker needed
 
 Run `node dist/cli.js <command> --help` for any command's options.
 
-**Smoke test** (container up + `npm run build` done):
+**Smoke test**
+
+Host only (no Docker), from the repo root after `npm install && npm run build` here:
+
+```bash
+./scripts/smoke-host.sh
+# detectIO + genScene on runtime/samples/simple_counter_fixed.st
+```
+
+With the `openplc-plc-dev` container up:
 
 ```bash
 node dist/cli.js status                                            # → { status, isRunning, runtimeReachable }
 node dist/cli.js compile runtime/samples/simple_counter_fixed.st   # → success: true, variableMap populated
 node dist/cli.js compile runtime/samples/simple_counter.st         # → success: false (intentionally broken — exercises the error path)
 ```
+
+If `compile` prints `failedStage: "runtime"`, Docker or the container never started matiec. That is an environment failure, not an ST error. The runtime half of this smoke was not run in environments without Docker.
 
 ## 4. Use it — as an MCP server
 

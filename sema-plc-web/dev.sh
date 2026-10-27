@@ -18,19 +18,28 @@ PLC_THINKING="${PLC_THINKING:-1}"           # 思考: 1=开(默认) 0=关。deep
 WORKSPACE="${WORKSPACE:-/tmp/plc-ver-ws}"   # agent 工作区
 ENV_FILE="${ENV_FILE:-$SCRIPT_DIR/.env}"    # API key 来源(从 .env.example 复制)
 
-# ⓪ Docker daemon 守卫(重启后 Docker Desktop 不会自启 → daemon 没跑则自动拉起并等待就绪)
+# ⓪ Docker 守卫。二进制缺失时立刻失败(Linux 上没有 `open -a Docker`,空等 120s 没有信息量)。
+if ! command -v docker >/dev/null 2>&1; then
+  echo "[dev.sh] 未找到 docker 命令。OpenPLC Runtime 需要 Docker Engine(Linux)或 Docker Desktop(macOS / Windows)。" >&2
+  echo "[dev.sh] 不依赖容器的检查:在仓库根执行 ./scripts/smoke-host.sh" >&2
+  exit 1
+fi
+
+# daemon 没跑:macOS 尝试拉起 Docker Desktop;其它系统请自行启动服务后重试。
 if ! docker info >/dev/null 2>&1; then
-  echo "[dev.sh] Docker daemon 未运行,尝试启动 Docker Desktop..."
-  open -a Docker
-  for i in $(seq 1 60); do
-    if docker info >/dev/null 2>&1; then
-      echo "[dev.sh] Docker daemon 已就绪"
-      break
-    fi
-    sleep 2
-  done
+  if [ "$(uname -s)" = "Darwin" ]; then
+    echo "[dev.sh] Docker daemon 未运行,尝试启动 Docker Desktop..."
+    open -a Docker
+    for i in $(seq 1 60); do
+      if docker info >/dev/null 2>&1; then
+        echo "[dev.sh] Docker daemon 已就绪"
+        break
+      fi
+      sleep 2
+    done
+  fi
   if ! docker info >/dev/null 2>&1; then
-    echo "[dev.sh] 等待 120s 后 Docker daemon 仍未就绪,请手动确认 Docker Desktop 状态后重试" >&2
+    echo "[dev.sh] Docker daemon 未就绪。macOS / Windows 请打开 Docker Desktop;Linux 请启动 Docker Engine 后重试。" >&2
     exit 1
   fi
 fi
@@ -44,7 +53,14 @@ elif docker ps -a --format '{{.Names}}' | grep -qx openplc-plc-dev; then
   echo "[dev.sh] start 已存在的容器 openplc-plc-dev"
   docker start openplc-plc-dev
 else
-  ( cd "$ROOT/sema-plc-tools/runtime" && docker-compose up -d )
+  if docker compose version >/dev/null 2>&1; then
+    ( cd "$ROOT/sema-plc-tools/runtime" && docker compose up -d )
+  elif command -v docker-compose >/dev/null 2>&1; then
+    ( cd "$ROOT/sema-plc-tools/runtime" && docker-compose up -d )
+  else
+    echo "[dev.sh] 未找到 'docker compose' 或 'docker-compose'。请安装 Docker Compose 后重试。" >&2
+    exit 1
+  fi
 fi
 
 # ② 重新编译 plc-tools(源码改过必须 build;没改其实可跳,留着保险)

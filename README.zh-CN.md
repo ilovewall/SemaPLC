@@ -105,7 +105,7 @@ node dist/cli.js serve                                 # 改以 MCP stdio 服务
 ### 前置条件
 
 - **Node.js ≥ 18** 和 **npm**
-- **Docker**(macOS / Windows 上用 Docker Desktop)—— 用于 OpenPLC Runtime 容器
+- **Docker** —— Linux 用 Docker Engine,macOS / Windows 用 Docker Desktop —— 用于 OpenPLC Runtime 容器。[测试](#-测试)里的宿主机冒烟不依赖它。
 - 一个 **LLM API key**(推荐 DeepSeek;也支持 Anthropic 以及 MiniMax / Gemini / OpenAI / xAI / Groq / OpenRouter / Qwen / Kimi 等 OpenAI-compatible 提供商)
 
 ### 安装
@@ -178,6 +178,14 @@ PLC_MODEL=openai ./dev.sh
 cd sema-plc-tools && npm test     # 无需 Docker
 cd sema-plc-web   && npm test     # 后端:vitest/node,前端:vitest/jsdom
 ```
+
+宿主机冒烟(无需 Docker、无需 API key),在工具链安装第 2 步之后:
+
+```bash
+./scripts/smoke-host.sh
+```
+
+它检查 Node ≥ 18,并对 `sema-plc-tools/runtime/samples/simple_counter_fixed.st` 跑离线 CLI(`detectIO`、`genScene`)。若没有 `docker` 或 daemon 未就绪,脚本对 `compile`、`status` 和 `./dev.sh` 打印 `SKIP` 并以 0 退出 —— 这三步需要 OpenPLC 容器。`compile` 的 `failedStage: "runtime"` 表示容器引擎没有启动 matiec,这是环境问题,不是 ST 错误。
 
 ## 🤝 致谢
 
