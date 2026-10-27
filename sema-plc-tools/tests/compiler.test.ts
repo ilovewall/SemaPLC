@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { parseIec2cErrors, runCompileChain, makeCompileScriptForTest } from '../src/compiler.js'
+import { parseIec2cErrors, runCompileChain, makeCompileScriptForTest, execFailureText } from '../src/compiler.js'
 import { adviceForIec2cError } from '../src/tools/iec2cErrorParser.js'
 import type { Iec2cError } from '../src/types.js'
 
@@ -196,6 +196,41 @@ describe('runCompileChain', () => {
     expect(result.xml2st.debugSuccess).toBe(false)
   })
 
+  it('keeps an empty non-runtime failure as iec2c with no invented diagnostics', async () => {
+    const execMock = vi.fn().mockResolvedValue({ stdout: '', stderr: '   ', exitCode: 1 })
+    const result = await runCompileChain('PROGRAM p END_PROGRAM', 'c', execMock)
+    expect(result.success).toBe(false)
+    expect(result.failedStage).toBe('iec2c')
+    expect(result.errorSummary).toBe('iec2c failed. Check stderr for details.')
+  })
+
+  it('reports a missing container engine as runtime, not an empty iec2c error', async () => {
+    const execMock = vi.fn().mockResolvedValue({
+      stdout: '',
+      stderr: 'spawn docker ENOENT',
+      exitCode: 1,
+    })
+    const result = await runCompileChain('PROGRAM p END_PROGRAM', 'openplc-plc-dev', execMock)
+    expect(result.success).toBe(false)
+    expect(result.failedStage).toBe('runtime')
+    expect(result.iec2c.success).toBe(false)
+    expect(result.iec2c.errors).toEqual([])
+    expect(result.xml2st.debugSuccess).toBe(false)
+    expect(result.errorSummary).toMatch(/environment failure/)
+    expect(result.errorSummary).toMatch(/ENOENT/)
+  })
+
+  it('reports a missing container as runtime', async () => {
+    const execMock = vi.fn().mockResolvedValue({
+      stdout: '',
+      stderr: 'Error: No such container: openplc-plc-dev',
+      exitCode: 1,
+    })
+    const result = await runCompileChain('PROGRAM p END_PROGRAM', 'openplc-plc-dev', execMock)
+    expect(result.failedStage).toBe('runtime')
+    expect(result.errorSummary).toMatch(/openplc-plc-dev/)
+  })
+
   it('returns xml2st_gluevars failure when exit code is 3', async () => {
     const execMock = vi.fn().mockResolvedValue({
       stdout: '',
@@ -206,5 +241,15 @@ describe('runCompileChain', () => {
     expect(result.success).toBe(false)
     expect(result.failedStage).toBe('xml2st_gluevars')
     expect(result.xml2st.glueVarsSuccess).toBe(false)
+  })
+})
+
+describe('execFailureText', () => {
+  it('uses Error.message when stderr is empty (spawn ENOENT)', () => {
+    expect(execFailureText({ stderr: '', message: 'spawn docker ENOENT' })).toBe('spawn docker ENOENT')
+  })
+
+  it('prefers a non-empty stderr over message', () => {
+    expect(execFailureText({ stderr: 'iec2c: boom', message: 'Command failed' })).toBe('iec2c: boom')
   })
 })

@@ -3,7 +3,7 @@
 ## 前置条件
 
 - **Node.js ≥ 18** 和 **npm**
-- **Docker**(macOS / Windows 上用 Docker Desktop)—— 用于 OpenPLC Runtime 容器
+- **Docker** —— Linux 用 Docker Engine,macOS / Windows 用 Docker Desktop —— 用于 OpenPLC Runtime 容器。仓库根的 `scripts/smoke-host.sh` 不依赖它。
 - 一个 **LLM API key**(推荐 DeepSeek;支持的完整提供商列表见 [模型配置](wiki/getting-started/model-config))
 
 ## 安装
@@ -81,4 +81,9 @@ PLC_MODEL=minimax-m2.7 ./dev.sh
 cd sema-plc-tools && npm test     # 单测,无需 Docker
 cd sema-plc-tools && npm run test:integration   # 集成测试,需容器在跑
 cd sema-plc-web   && npm test     # 后端:vitest/node,前端:vitest/jsdom
+
+# 宿主机冒烟,无需 Docker;先在 sema-plc-tools 里 npm install && npm run build
+./scripts/smoke-host.sh
 ```
+
+`smoke-host.sh` 检查 Node ≥ 18 和离线 CLI(`detectIO`、`genScene`)。没有 `docker` 时对 `compile`、`status`、`./dev.sh` 打印 `SKIP` 并以 0 退出。`compile` 的 `failedStage: "runtime"` 表示容器引擎没有启动 matiec。

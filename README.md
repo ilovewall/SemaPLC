@@ -105,7 +105,7 @@ See [`sema-plc-tools/README.md`](sema-plc-tools/README.md) for the full command 
 ### Prerequisites
 
 - **Node.js ≥ 18** and **npm**
-- **Docker** (Docker Desktop on macOS / Windows) — for the OpenPLC Runtime container
+- **Docker** — Docker Engine on Linux, or Docker Desktop on macOS / Windows — for the OpenPLC Runtime container. The host smoke under [Tests](#-tests) does not need it.
 - An **LLM API key** (DeepSeek recommended; Anthropic and OpenAI-compatible providers such as MiniMax / Gemini / OpenAI / xAI / Groq / OpenRouter / Qwen / Kimi are also supported)
 
 ### Setup
@@ -178,6 +178,14 @@ Open **<http://localhost:5173>** and describe a control requirement in the chat 
 cd sema-plc-tools && npm test     # no Docker needed
 cd sema-plc-web   && npm test     # server: vitest/node, frontend: vitest/jsdom
 ```
+
+Host smoke (no Docker, no API key), after toolchain setup step 2:
+
+```bash
+./scripts/smoke-host.sh
+```
+
+It checks Node ≥ 18 and the offline CLI (`detectIO`, `genScene`) on `sema-plc-tools/runtime/samples/simple_counter_fixed.st`. If `docker` is missing or the daemon is down, it prints `SKIP` for `compile`, `status`, and `./dev.sh` and still exits 0 — those need the OpenPLC container. A `compile` result with `failedStage: "runtime"` means the container engine never started matiec; that is an environment failure, not an ST error.
 
 ## 🤝 Acknowledgments
 

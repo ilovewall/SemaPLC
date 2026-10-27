@@ -28,7 +28,9 @@ export interface VariableEntry {
 
 export interface CompileResult {
   success: boolean
-  failedStage: null | 'validate' | 'iec2c' | 'xml2st_debug' | 'xml2st_gluevars' | 'zip'
+  // `runtime`: the container engine never started matiec (missing docker, daemon down,
+  // container absent). Distinct from `iec2c`, which means matiec ran and rejected the ST.
+  failedStage: null | 'validate' | 'runtime' | 'iec2c' | 'xml2st_debug' | 'xml2st_gluevars' | 'zip'
   iec2c: {
     success: boolean
     errors: Iec2cError[]
