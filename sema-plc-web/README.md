@@ -171,7 +171,7 @@ A workspace is a single local directory (= `SemaCore.workingDir`), set via `--wo
 
 ```bash
 npm test                                  # sema-plc-web: 314 tests (server: vitest/node, frontend: vitest/jsdom)
-( cd ../sema-plc-tools && npm test )      # @sema/plc-tools: 555 tests
+( cd ../sema-plc-tools && npm test )      # @sema/plc-tools: 560 tests
 ```
 
 ## Troubleshooting

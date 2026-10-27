@@ -45,7 +45,7 @@ docker compose up -d --build   # idempotent; first build takes several minutes
 ```bash
 npm install
 npm run build               # tsc → dist/  (rebuild after editing src/)
-npm test                    # 555 unit tests, no Docker needed
+npm test                    # 560 unit tests, no Docker needed
 ```
 
 ## 3. Use it — the CLI
@@ -124,7 +124,7 @@ The full I/O contract for every tool lives in [`src/types.ts`](src/types.ts).
 ## 6. Tests
 
 ```bash
-npm test                    # 555 unit tests — no container needed
+npm test                    # 560 unit tests — no container needed
 npm run test:integration    # full chain (compile → upload → start → readVariables → stop); needs the container running
 ```
 
